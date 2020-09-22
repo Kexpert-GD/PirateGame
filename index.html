@@ -1,0 +1,123 @@
+
+<html>
+<head>
+    <title>Treasure hunt</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="collision.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Mystery+Quest" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- HOMEWORK Part 1: Adding scores
+        Step 1: Create p tag inside .game
+        Step 2: Create a scores variable with intial value 0
+        Step 3: When player collides with coin,
+                  increase the value of above variable by 1 and
+                  update the text of p tag to that variable.
+ -->
+
+<!-- HOMEWORK Part 2: Add sound effects
+        Step 1: Add audio tags anywhere inside body, add background music on autoplay
+        Step 2: Play the coin sound when player collides with coin
+        Step 3: Pause the background music and Play the laugh sound when game overs
+ -->
+
+<!-- HOMEWORK Part 3: Add box shadow (style.css)
+        Create a keyframe animation using box shadow,
+        increase the horizontal and vertical shadow on 100%
+        Use gold color for shining effect.
+        Apply this keyframe animation to coin
+ -->
+
+<h1>Treasure hunt</h1>
+<div style="text-align:center;">
+<button id = "ReloadButton" onclick="window.location.reload()"> Reload</button>
+
+</div>
+<div class="game">
+    <img class='enemy' src='octopus.png'>
+    <img id='player' src="redhat.png" >
+<p id = "score"> Score: 0</p>
+
+
+</div>
+
+
+<audio id = "CoinSound" src = "coin.mp3"></audio>
+<audio src = "music.mp3" autoplay></audio>
+<audio id = "EvilLaugh" src = "laugh.mp3"></audio>
+<script>
+
+    var CoinCount = 0;
+    function move(event){
+        var keyPressed = event.originalEvent.code;
+        if(keyPressed == 'ArrowRight'){
+            var rightCSS = {
+                'left': '+=15px'
+            }
+            $("#player").css(rightCSS);
+        }
+        if (keyPressed == 'ArrowLeft'){
+            var leftCSS = {
+                'left': '-=15px'
+            }
+            $("#player").css(leftCSS);
+        }
+        if (keyPressed == 'ArrowDown'){
+            var bottomCSS = {
+                'top': '+=15px'
+            }
+            $("#player").css(bottomCSS);
+        }
+        if (keyPressed == 'ArrowUp'){
+            var topCSS = {
+                'top': '-=15px'
+            }
+            $("#player").css(topCSS);
+        }
+    }
+
+    $(document).keydown(move);
+    function addCoin(){
+        $('.game').append("<img class='coin' src='coin.png'>");
+        var randomCSS = {
+            top: Math.random()*400,
+            left: Math.random()*900
+        }
+        $('.coin').css(randomCSS);
+        $('.enemy').animate(randomCSS, 4200, gameOver);
+    }
+    addCoin();
+
+    function checkCollision(){
+
+        var collided = collision($('.coin'), $('#player'));
+        if(collided){
+
+
+            collided.remove();
+            $('.enemy').stop();
+            addCoin();
+            //console.log(CoinCount);
+            $('#CoinSound')[0].play();
+            CoinCount++;
+            $('#score').text("Score: " + CoinCount);
+
+        }
+    }
+
+
+    setInterval(checkCollision, 200);
+
+    function gameOver(){
+        $('#player').remove();
+        $(".coin").remove();
+        $("#EvilLaugh")[0].play();
+        $('h1').html("Game Over!!");
+
+
+    }
+</script>
+</body>
+</html>
+<!--<script type="application/javascript" src="/share.js"></script>-->
